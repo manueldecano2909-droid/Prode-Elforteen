@@ -35,7 +35,7 @@ export default function Navbar() {
     <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <span className="text-green-400 font-bold text-lg mr-4">🌎 Prode 2026</span>
+          <span className="text-green-400 font-bold text-lg mr-4">🌎 Prode forteenero</span>
           {links.map((link) => (
             <Link
               key={link.href}
