@@ -4,6 +4,7 @@ export interface Profile {
   id: string
   username: string
   is_admin: boolean
+  avatar_url: string | null
   created_at: string
 }
 
@@ -34,6 +35,7 @@ export interface Prediction {
 export interface LeaderboardEntry {
   user_id: string
   username: string
+  avatar_url: string | null
   total_points: number
   exact_results: number
   correct_outcomes: number

@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import UserMenu from './UserMenu'
 import type { Profile } from '@/lib/types'
 
 export default function Navbar() {
   const pathname = usePathname()
-  const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
 
   useEffect(() => {
@@ -24,12 +24,6 @@ export default function Navbar() {
       }
     })
   }, [])
-
-  async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
 
   const links = [
     { href: '/fixture', label: '⚽ Fixture' },
@@ -56,19 +50,13 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-3">
-          {profile && (
-            <span className="text-sm text-gray-400">
-              👤 <span className="text-white font-medium">{profile.username}</span>
-            </span>
-          )}
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-gray-800"
-          >
-            Salir
-          </button>
-        </div>
+
+        {profile && (
+          <UserMenu
+            profile={profile}
+            onAvatarUpdated={(url) => setProfile((p) => p ? { ...p, avatar_url: url } : p)}
+          />
+        )}
       </div>
     </nav>
   )

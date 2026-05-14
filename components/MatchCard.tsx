@@ -61,23 +61,16 @@ function formatDate(dateStr: string) {
 
 export default function MatchCard({ match, prediction, userId, onSaved }: Props) {
   const isLocked = new Date(match.match_date) <= new Date()
-  const [home, setHome] = useState(prediction?.home_score?.toString() ?? '')
-  const [away, setAway] = useState(prediction?.away_score?.toString() ?? '')
+  const [home, setHome] = useState<number>(prediction?.home_score ?? 0)
+  const [away, setAway] = useState<number>(prediction?.away_score ?? 0)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
   async function handleSave() {
-    const h = parseInt(home)
-    const a = parseInt(away)
-    if (isNaN(h) || isNaN(a) || h < 0 || a < 0) {
-      setError('Ingresá números válidos (0 o más)')
-      return
-    }
     setError('')
-
     const supabase = createClient()
     const { error: err } = await supabase.from('predictions').upsert(
-      { user_id: userId, match_id: match.id, home_score: h, away_score: a },
+      { user_id: userId, match_id: match.id, home_score: home, away_score: away },
       { onConflict: 'user_id,match_id' }
     )
     if (err) {
@@ -153,8 +146,7 @@ export default function MatchCard({ match, prediction, userId, onSaved }: Props)
                 min={0}
                 max={99}
                 value={home}
-                onChange={(e) => setHome(e.target.value)}
-                placeholder="0"
+                onChange={(e) => setHome(Math.max(0, parseInt(e.target.value) || 0))}
                 className="w-12 text-center bg-gray-800 border border-gray-700 rounded-lg py-1.5 text-white font-bold focus:outline-none focus:border-green-500"
               />
               <span className="text-gray-500 font-bold">-</span>
@@ -163,8 +155,7 @@ export default function MatchCard({ match, prediction, userId, onSaved }: Props)
                 min={0}
                 max={99}
                 value={away}
-                onChange={(e) => setAway(e.target.value)}
-                placeholder="0"
+                onChange={(e) => setAway(Math.max(0, parseInt(e.target.value) || 0))}
                 className="w-12 text-center bg-gray-800 border border-gray-700 rounded-lg py-1.5 text-white font-bold focus:outline-none focus:border-green-500"
               />
               <span className="text-xs text-gray-500 flex-1">{match.away_team.split(' ')[0]}</span>

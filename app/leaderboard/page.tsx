@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
+import { Avatar } from '@/components/UserMenu'
 import type { LeaderboardEntry } from '@/lib/types'
 
 export default function LeaderboardPage() {
@@ -23,12 +24,12 @@ export default function LeaderboardPage() {
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username')
+        .select('id, username, avatar_url')
 
       if (!predsData || !profiles) { setLoading(false); return }
 
-      const profileMap: Record<string, string> = {}
-      for (const p of profiles) profileMap[p.id] = p.username
+      const profileMap: Record<string, { username: string; avatar_url: string | null }> = {}
+      for (const p of profiles) profileMap[p.id] = { username: p.username, avatar_url: p.avatar_url }
 
       const statsMap: Record<string, { total: number; exact: number; correct: number; total_preds: number }> = {}
 
@@ -51,7 +52,8 @@ export default function LeaderboardPage() {
 
       const leaderboard: LeaderboardEntry[] = Object.entries(statsMap).map(([uid, stats]) => ({
         user_id: uid,
-        username: profileMap[uid] ?? 'Desconocido',
+        username: profileMap[uid]?.username ?? 'Desconocido',
+        avatar_url: profileMap[uid]?.avatar_url ?? null,
         total_points: stats.total,
         exact_results: stats.exact,
         correct_outcomes: stats.correct,
@@ -118,6 +120,7 @@ export default function LeaderboardPage() {
                     {medalEmoji(rank)}
                   </div>
                   <div className="col-span-5 flex items-center gap-2">
+                    <Avatar url={entry.avatar_url} username={entry.username} size={7} />
                     <span className={`font-medium text-sm ${isMe ? 'text-green-400' : 'text-white'}`}>
                       {entry.username}
                     </span>
