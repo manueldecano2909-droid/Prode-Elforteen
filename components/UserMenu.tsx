@@ -10,19 +10,19 @@ interface Props {
   onAvatarUpdated: (url: string) => void
 }
 
-export function Avatar({ url, username, size = 8 }: { url: string | null; username: string; size?: number }) {
-  const sizeClass = `w-${size} h-${size}`
+export function Avatar({ url, username, small = false }: { url: string | null; username: string; small?: boolean }) {
+  const sizeClass = small ? 'w-7 h-7 text-xs' : 'w-8 h-8 text-sm'
   if (url) {
     return (
       <img
         src={url}
         alt={username}
-        className={`${sizeClass} rounded-full object-cover border-2 border-gray-700`}
+        className={`${sizeClass} rounded-full object-cover border-2 border-gray-700 shrink-0`}
       />
     )
   }
   return (
-    <div className={`${sizeClass} rounded-full bg-green-800 flex items-center justify-center text-white font-bold text-sm border-2 border-gray-700`}>
+    <div className={`${sizeClass} rounded-full bg-green-800 flex items-center justify-center text-white font-bold border-2 border-gray-700 shrink-0`}>
       {username.charAt(0).toUpperCase()}
     </div>
   )
@@ -79,7 +79,7 @@ export default function UserMenu({ profile, onAvatarUpdated }: Props) {
         {uploading ? (
           <div className="w-8 h-8 rounded-full bg-gray-700 animate-pulse" />
         ) : (
-          <Avatar url={profile.avatar_url} username={profile.username} size={8} />
+          <Avatar url={profile.avatar_url} username={profile.username} />
         )}
         <span className="text-sm font-medium text-white">{profile.username}</span>
         <span className="text-gray-500 text-xs">{open ? '▲' : '▼'}</span>

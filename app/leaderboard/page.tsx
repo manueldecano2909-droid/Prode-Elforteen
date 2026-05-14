@@ -120,7 +120,7 @@ export default function LeaderboardPage() {
                     {medalEmoji(rank)}
                   </div>
                   <div className="col-span-5 flex items-center gap-2">
-                    <Avatar url={entry.avatar_url} username={entry.username} size={7} />
+                    <Avatar url={entry.avatar_url} username={entry.username} small />
                     <span className={`font-medium text-sm ${isMe ? 'text-green-400' : 'text-white'}`}>
                       {entry.username}
                     </span>
