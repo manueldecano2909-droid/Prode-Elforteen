@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -10,9 +10,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
+  const [remember, setRemember] = useState(true)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    const saved = localStorage.getItem('prode_email')
+    if (saved) setEmail(saved)
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -27,6 +33,8 @@ export default function LoginPage() {
       if (error) {
         setError('Email o contraseña incorrectos')
       } else {
+        if (remember) localStorage.setItem('prode_email', email)
+        else localStorage.removeItem('prode_email')
         router.push('/fixture')
         router.refresh()
       }
@@ -136,6 +144,18 @@ export default function LoginPage() {
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-green-500"
               />
             </div>
+
+            {mode === 'login' && (
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  className="w-4 h-4 accent-green-600 cursor-pointer"
+                />
+                <span className="text-sm text-gray-400">Recordarme</span>
+              </label>
+            )}
 
             {error && (
               <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-2.5 text-red-300 text-sm">
